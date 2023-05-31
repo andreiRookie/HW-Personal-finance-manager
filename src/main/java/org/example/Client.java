@@ -54,7 +54,6 @@ public class Client {
                 String responseAsString = in.readLine();
                 System.out.println("Response: " + responseAsString);
 
-                Utils.mapper.enable(DeserializationFeature.UNWRAP_ROOT_VALUE);
                 Response response = Utils.mapper.readValue(responseAsString, new TypeReference<Response>() {});
 
             } catch (IOException e) {

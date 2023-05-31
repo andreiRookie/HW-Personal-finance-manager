@@ -4,9 +4,11 @@ import java.util.HashSet;
 
 public class CategoriesHandler {
 
-    private final HashSet<Category> categories = new HashSet<>();
+    private final HashSet<Category> categories;
 
-    public CategoriesHandler() {}
+    public CategoriesHandler(HashSet<Category> categories) {
+        this.categories = categories;
+    }
 
     public void addCategory(Category category) {
         this.categories.add(category);

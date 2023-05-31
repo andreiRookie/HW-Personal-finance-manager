@@ -17,6 +17,7 @@ import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 public class Server {
@@ -27,7 +28,7 @@ public class Server {
     public static void main(String[] args) {
 
         String requestAsString;
-        CategoriesHandler categoriesHolder = new CategoriesHandler();
+        CategoriesHandler categoriesHolder = new CategoriesHandler(new HashSet<>());
         List<String> products = new ArrayList<>();
 
         CSVParser csvParser = new CSVParserBuilder()
@@ -98,7 +99,6 @@ public class Server {
                     Category maxSumCategory = categoriesHolder.getMaxSumCategory();
                     Response response = new Response(maxSumCategory.getTitle(), maxSumCategory.getSum());
 
-                    Utils.mapper.enable(SerializationFeature.WRAP_ROOT_VALUE);
                     out.println(Utils.mapper.writeValueAsString(response));
 
                 } catch (IOException e) {
