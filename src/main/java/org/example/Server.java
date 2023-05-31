@@ -1,4 +1,4 @@
-package org.example.server;
+package org.example;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -7,10 +7,12 @@ import com.opencsv.CSVParserBuilder;
 import com.opencsv.CSVReader;
 import com.opencsv.CSVReaderBuilder;
 import com.opencsv.exceptions.CsvException;
-import org.example.Utils;
-import org.example.categories.CategoriesHandler;
-import org.example.categories.Category;
-import org.example.client.Request;
+import org.example.category.CategoriesHandler;
+import org.example.category.Category;
+import org.example.net.Config;
+import org.example.net.Request;
+import org.example.net.Response;
+import org.example.util.Utils;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -25,18 +27,14 @@ public class Server {
     public static void main(String[] args) {
 
         String requestAsString;
-
         CategoriesHandler categoriesHolder = new CategoriesHandler();
-
         List<String> products = new ArrayList<>();
 
-        // TO SEPARATE CLASS
         CSVParser csvParser = new CSVParserBuilder()
                 .withSeparator('\t')
                 .build();
 
         File tsvFile = new File(Utils.CATEGORIES_FILE_PATH);
-
         if (tsvFile.exists()) {
             try( CSVReader csvReader = new CSVReaderBuilder(new FileReader(tsvFile))
                     .withCSVParser(csvParser)
@@ -54,7 +52,7 @@ public class Server {
                         }
                     }
                 }
-
+                System.out.println("Read file \'" + Utils.CATEGORIES_FILE_PATH + "\':");
                 categoriesHolder.getCategories().forEach(System.out::println);
 
             }catch (IOException | CsvException e) {
@@ -72,8 +70,8 @@ public class Server {
                      ) {
 
                     requestAsString = in.readLine();
+                    System.out.println("Request: " + requestAsString);
                     Request request = Utils.mapper.readValue(requestAsString, new TypeReference<Request>(){});
-                    System.out.println("Request: " + request.toString());
 
                     for (Category category : categoriesHolder.getCategories()) {
 
@@ -97,8 +95,8 @@ public class Server {
                     }
                     categoriesHolder.getCategories().forEach(System.out::println);
 
-                    Category maxCategory = categoriesHolder.getMaxSumCategory();
-                    Response response = new Response(maxCategory.getTitle(), maxCategory.getSum());
+                    Category maxSumCategory = categoriesHolder.getMaxSumCategory();
+                    Response response = new Response(maxSumCategory.getTitle(), maxSumCategory.getSum());
 
                     Utils.mapper.enable(SerializationFeature.WRAP_ROOT_VALUE);
                     out.println(Utils.mapper.writeValueAsString(response));

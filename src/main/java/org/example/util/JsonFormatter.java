@@ -1,4 +1,4 @@
-package org.example;
+package org.example.util;
 
 public interface JsonFormatter<T> {
     String toJsonString(T string);

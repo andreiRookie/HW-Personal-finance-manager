@@ -1,4 +1,4 @@
-package org.example.client;
+package org.example.net;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

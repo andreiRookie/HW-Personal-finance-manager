@@ -1,8 +1,8 @@
-package org.example;
+package org.example.util;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.example.client.Request;
+import org.example.net.Request;
 import java.io.IOException;
 
 public class JsonFormatterImpl implements JsonFormatter<Request>{

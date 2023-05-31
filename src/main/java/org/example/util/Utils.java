@@ -1,8 +1,6 @@
-package org.example;
+package org.example.util;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-
 import java.time.format.DateTimeFormatter;
 
 public class Utils {
