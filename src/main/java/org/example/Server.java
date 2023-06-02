@@ -11,22 +11,21 @@ import org.example.category.Category;
 import org.example.net.Config;
 import org.example.net.Request;
 import org.example.net.Response;
+import org.example.util.Statistics;
+import org.example.util.StatisticsImpl;
 import org.example.util.Utils;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 
 public class Server {
 
     private static final int PURCHASE_INDEX = 0;
     private static final int CATEGORY_INDEX = 1;
-
+    private static final String CATEGORIES_FILE_PATH = "categories.tsv";
     public static void main(String[] args) {
 
-        String requestAsString;
         CategoriesHandler categoriesHolder = new CategoriesHandler(new HashSet<>());
         List<String> products = new ArrayList<>();
 
@@ -34,8 +33,18 @@ public class Server {
                 .withSeparator('\t')
                 .build();
 
-        File tsvFile = new File(Utils.CATEGORIES_FILE_PATH);
-        if (tsvFile.exists()) {
+        Statistics<HashSet<Category>> stats = new StatisticsImpl();
+        File statsFile = new File(StatisticsImpl.STATISTICS_FILE);
+        File tsvFile = new File(CATEGORIES_FILE_PATH);
+
+        if (statsFile.exists()) {
+            categoriesHolder = new CategoriesHandler(stats.loadStats(statsFile));
+            products = categoriesHolder.getAllPurchasesList();
+
+            System.out.println("Read file '" + StatisticsImpl.STATISTICS_FILE + "':");
+            categoriesHolder.getCategories().forEach(System.out::println);
+
+        } else if (tsvFile.exists()) {
             try( CSVReader csvReader = new CSVReaderBuilder(new FileReader(tsvFile))
                     .withCSVParser(csvParser)
                     .build()) {
@@ -52,18 +61,23 @@ public class Server {
                         }
                     }
                 }
-                System.out.println("Read file \'" + Utils.CATEGORIES_FILE_PATH + "\':");
+                System.out.println("Read file '" + CATEGORIES_FILE_PATH + "':");
                 categoriesHolder.getCategories().forEach(System.out::println);
 
-            }catch (IOException | CsvException e) {
+                stats.saveStats(statsFile, categoriesHolder.getCategories());
+
+            } catch (IOException | CsvException e) {
                 e.printStackTrace();
             }
         }
+
+        String requestAsString;
 
         try (ServerSocket serverSocket = new ServerSocket(Config.PORT)) {
             System.out.println("Server started");
 
             while (true) {
+
                 try (Socket socket = serverSocket.accept();
                      BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                      PrintWriter out = new PrintWriter(socket.getOutputStream(), true)
@@ -94,10 +108,10 @@ public class Server {
                         }
                     }
                     categoriesHolder.getCategories().forEach(System.out::println);
+                    stats.saveStats(statsFile, categoriesHolder.getCategories());
 
                     Category maxSumCategory = categoriesHolder.getMaxSumCategory();
                     Response response = new Response(maxSumCategory.getTitle(), maxSumCategory.getSum());
-
                     out.println(Utils.mapper.writeValueAsString(response));
 
                 } catch (IOException e) {

@@ -42,10 +42,14 @@ class CategoriesHandlerTest {
 
     @Test
     void getCategoryByTitle_returnsNull() {
-        Category expected = null;
         Category actual = categoriesHandler.getCategoryByTitle(SERVICE);
 
-        Assertions.assertEquals(expected, actual);
+        assertNull(actual);
+    }
+
+    @Test
+    void getAllPurchasesList() {
+        // TODO
     }
 
     private HashSet<Category> getCategories() {
