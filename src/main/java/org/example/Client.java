@@ -1,7 +1,6 @@
 package org.example;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import org.example.util.Utils;
 import org.example.net.Request;
 import org.example.net.Config;
@@ -48,7 +47,7 @@ public class Client {
             ) {
 
 //                Request request = new Request("булка", Utils.TIME_FORMATTER.format(LocalDateTime.now()), 200);
-                Request request = new Request(purchase, "2022.02.08", sum);
+                Request request = new Request(purchase, "2022.02.18", sum);
                 out.println(Utils.mapper.writeValueAsString(request));
 
                 String responseAsString = in.readLine();

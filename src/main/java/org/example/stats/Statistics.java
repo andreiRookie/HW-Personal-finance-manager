@@ -1,4 +1,4 @@
-package org.example.util;
+package org.example.stats;
 
 import java.io.File;
 public interface Statistics<T> {

@@ -1,14 +1,17 @@
 package org.example.category;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
 
 public class Category {
     private final String title;
     private int sum;
     public static final String DEFAULT_CATEGORY_TITLE = "другое";
-    private HashSet<String> purchases = new HashSet<>();
+    private List<Purchase> purchases = new ArrayList<>();
 
     public Category(String title) {
         this.title = title;
@@ -17,14 +20,14 @@ public class Category {
     public Category(
             @JsonProperty("title")String title,
             @JsonProperty("sum") int sum,
-            @JsonProperty("purchases") HashSet<String> purchases) {
+            @JsonProperty("purchases") List<Purchase> purchases) {
         this.title = title;
         this.sum = sum;
         this.purchases = purchases;
     }
 
 
-    public void addPurchase(String purchase) {
+    public void addPurchase(Purchase purchase) {
         this.purchases.add(purchase);
     }
 
@@ -44,7 +47,7 @@ public class Category {
 //        return 31* (title != null ? title.hashCode() : 0);
     }
 
-    public HashSet<String> getPurchases() {
+    public List<Purchase> getPurchases() {
         return purchases;
     }
 
@@ -74,7 +77,7 @@ public class Category {
         this.sum = sum;
     }
 
-    public void setPurchases(HashSet<String> purchases) {
+    public void setPurchases(List<Purchase> purchases) {
         this.purchases = purchases;
     }
 }
