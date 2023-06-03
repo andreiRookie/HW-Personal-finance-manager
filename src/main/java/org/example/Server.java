@@ -29,10 +29,6 @@ public class Server {
         CategoriesHandler categoriesHolder = new CategoriesHandler(new HashSet<>());
         List<String> products = new ArrayList<>();
 
-        CSVParser csvParser = new CSVParserBuilder()
-                .withSeparator('\t')
-                .build();
-
         Statistics<HashSet<Category>> stats = new StatisticsImpl();
         File statsFile = new File(StatisticsImpl.STATISTICS_FILE);
         File tsvFile = new File(CATEGORIES_FILE_PATH);
@@ -45,6 +41,11 @@ public class Server {
             categoriesHolder.getCategories().forEach(System.out::println);
 
         } else if (tsvFile.exists()) {
+
+            CSVParser csvParser = new CSVParserBuilder()
+                    .withSeparator('\t')
+                    .build();
+
             try( CSVReader csvReader = new CSVReaderBuilder(new FileReader(tsvFile))
                     .withCSVParser(csvParser)
                     .build()) {
@@ -71,10 +72,9 @@ public class Server {
             }
         }
 
-        String requestAsString;
-
         try (ServerSocket serverSocket = new ServerSocket(Config.PORT)) {
             System.out.println("Server started");
+            String requestAsString;
 
             while (true) {
 
