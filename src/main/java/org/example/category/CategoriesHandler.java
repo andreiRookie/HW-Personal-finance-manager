@@ -1,9 +1,10 @@
 package org.example.category;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 
 public class CategoriesHandler {
-
     private final HashSet<Category> categories;
 
     public CategoriesHandler(HashSet<Category> categories) {
@@ -38,5 +39,13 @@ public class CategoriesHandler {
             }
         }
         return null;
+    }
+
+    public List<String> getAllPurchasesList(){
+        List<String> list = new ArrayList<>();
+        for (Category category : getCategories()) {
+            list.addAll(category.getPurchases());
+        }
+        return list;
     }
 }

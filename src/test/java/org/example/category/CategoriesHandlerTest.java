@@ -3,8 +3,9 @@ package org.example.category;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -42,24 +43,44 @@ class CategoriesHandlerTest {
 
     @Test
     void getCategoryByTitle_returnsNull() {
-        Category expected = null;
         Category actual = categoriesHandler.getCategoryByTitle(SERVICE);
+
+        assertNull(actual);
+    }
+
+    @Test
+    void getAllPurchasesList() {
+        List<String> expected = new ArrayList<>() {
+            {
+                add("shirt");
+                add("oil");
+                add("bread");
+                add("butter");
+                add("soap");
+            }
+        };
+        List<String> actual = categoriesHandler.getAllPurchasesList();
 
         Assertions.assertEquals(expected, actual);
     }
 
     private HashSet<Category> getCategories() {
-        HashSet<Category> set =new HashSet<>();
+        HashSet<Category> set = new HashSet<>();
         int sum = 0;
-        
+
         Category food = new Category(FOOD);
         food.setSum(sum += 100);
+        food.addPurchase("bread");
+        food.addPurchase("butter");
         Category clothes = new Category(CLOTHES);
         clothes.setSum(sum += 100);
+        clothes.addPurchase("shirt");
         Category home = new Category(Home);
         home.setSum(sum += 100);
+        home.addPurchase("soap");
         Category car = new Category(CAR);
         car.setSum(sum += 100);
+        car.addPurchase("oil");
 
         set.add(food);
         set.add(clothes);

@@ -1,5 +1,6 @@
 package org.example.category;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.HashSet;
 import java.util.Objects;
 
@@ -7,11 +8,21 @@ public class Category {
     private final String title;
     private int sum;
     public static final String DEFAULT_CATEGORY_TITLE = "другое";
-    private final HashSet<String> purchases = new HashSet<>();
+    private HashSet<String> purchases = new HashSet<>();
 
     public Category(String title) {
         this.title = title;
     }
+
+    public Category(
+            @JsonProperty("title")String title,
+            @JsonProperty("sum") int sum,
+            @JsonProperty("purchases") HashSet<String> purchases) {
+        this.title = title;
+        this.sum = sum;
+        this.purchases = purchases;
+    }
+
 
     public void addPurchase(String purchase) {
         this.purchases.add(purchase);
@@ -61,5 +72,9 @@ public class Category {
 
     public void setSum(int sum) {
         this.sum = sum;
+    }
+
+    public void setPurchases(HashSet<String> purchases) {
+        this.purchases = purchases;
     }
 }
