@@ -26,6 +26,8 @@ public class Server {
 
     public static void main(String[] args) {
 
+        Scanner scanner = new Scanner(System.in);
+
         CategoriesHandler categoriesHolder = new CategoriesHandler(new HashSet<>());
         List<String> products = new ArrayList<>();
 
@@ -33,15 +35,18 @@ public class Server {
         File statsFile = new File(StatisticsImpl.STATISTICS_FILE);
         File tsvFile = new File(CATEGORIES_FILE_PATH);
 
-//        if (statsFile.exists()) {
-//            categoriesHolder = new CategoriesHandler(stats.loadStats(statsFile));
-//            products = categoriesHolder.getAllPurchasesTitleList();
-//
-//            System.out.println("Read file '" + StatisticsImpl.STATISTICS_FILE + "':");
-//            categoriesHolder.getCategories().forEach(System.out::println);
-//
-//        } else if (tsvFile.exists()) {
-        if (tsvFile.exists()) {
+        // Categories & products from statistics file
+        if (statsFile.exists()) {
+            StatisticsObject statsObj = stats.loadStats(statsFile);
+            categoriesHolder = new CategoriesHandler(statsObj.getCategories());
+            products = categoriesHolder.getAllPurchasesTitleList();
+
+            System.out.println("Read file '" + StatisticsImpl.STATISTICS_FILE + "':");
+            categoriesHolder.getCategories().forEach(System.out::println);
+
+        // Categories & products from categories.tsv file
+        } else if (tsvFile.exists()) {
+
             CSVParser csvParser = new CSVParserBuilder()
                     .withSeparator('\t')
                     .build();
@@ -65,27 +70,6 @@ public class Server {
                 System.out.println("Read file '" + CATEGORIES_FILE_PATH + "':");
                 categoriesHolder.getCategories().forEach(System.out::println);
 
-                // Stats
-//                Category maxCat = categoriesHolder.getMaxCategory();
-//                StatisticsCategory maxStatCat = new StatisticsCategory(maxCat.getTitle(), maxCat.getSum());
-//                Category maxYearCat = categoriesHolder.getMaxYearCategory(2022);
-//                StatisticsCategory maxYearStatCat = new StatisticsCategory(maxYearCat.getTitle(), maxYearCat.getSum());
-//                Category maxMonthCat = categoriesHolder.getMaxMonthCategory(05);
-//                StatisticsCategory maxMonthStatCat = new StatisticsCategory(maxMonthCat.getTitle(), maxMonthCat.getSum());
-//                Category maxDayCat = categoriesHolder.getMaxDayCategory(10);
-//                StatisticsCategory maxDayStatCat = new StatisticsCategory(maxDayCat.getTitle(), maxDayCat.getSum());
-//
-//                StatisticsObject statsObj = new StatisticsObject(
-//                        categoriesHolder.getCategories(),
-//                        maxStatCat,
-//                        maxYearStatCat,
-//                        maxMonthStatCat,
-//                        maxDayStatCat
-//                );
-//
-//
-//                stats.saveStats(statsFile, statsObj);
-
             } catch (IOException | CsvException e) {
                 e.printStackTrace();
             }
@@ -97,6 +81,7 @@ public class Server {
 
             while (true) {
                 boolean shouldAddPurchase = false;
+
                 try (Socket socket = serverSocket.accept();
                      BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                      PrintWriter out = new PrintWriter(socket.getOutputStream(), true)
@@ -109,6 +94,7 @@ public class Server {
 
                     for (Category category : categoriesHolder.getCategories()) {
 
+                        // default category
                         if (!products.contains(newPurchase.getTitle())) {
                             Category defaultCat =
                                     categoriesHolder.getCategoryByTitle(Category.DEFAULT_CATEGORY_TITLE);
@@ -116,48 +102,62 @@ public class Server {
                                 defaultCat = new Category(Category.DEFAULT_CATEGORY_TITLE);
                                 categoriesHolder.addCategory(defaultCat);
                             }
-                            defaultCat.addPurchase(newPurchase);
-                            defaultCat.setSum(defaultCat.getSum() + request.getSum());
+                            defaultCat.addPurchaseAndSetCategorySum(newPurchase);
                             break;
                         }
 
                         for (Purchase purchase : category.getPurchases()) {
-                            if (purchase.getTitle().equals(request.getTitle())){
+                            if (purchase.getTitle().equals(request.getTitle())) {
                                 shouldAddPurchase = true;
-                                category.setSum(category.getSum() + request.getSum());
+                                break;
                             }
                         }
                         if (shouldAddPurchase) {
-                            category.addPurchase(newPurchase);
+                            category.addPurchaseAndSetCategorySum(newPurchase);
+                            shouldAddPurchase = false;
                         }
-                        shouldAddPurchase = false;
                     }
+                    System.out.println("Current categories:");
                     categoriesHolder.getCategories().forEach(System.out::println);
 
-                    // Stats.....
+                    // maxCategory server response
                     Category maxCat = categoriesHolder.getMaxCategory();
-                    StatisticsCategory maxStatCat = new StatisticsCategory(maxCat.getTitle(), maxCat.getSum());
-                    Category maxYearCat = categoriesHolder.getMaxYearCategory("2022");
-                    StatisticsCategory maxYearStatCat = new StatisticsCategory(maxYearCat.getTitle(), maxYearCat.getSum());
-                    Category maxMonthCat = categoriesHolder.getMaxMonthCategory("02");
-                    StatisticsCategory maxMonthStatCat = new StatisticsCategory(maxMonthCat.getTitle(), maxMonthCat.getSum());
-                    Category maxDayCat = categoriesHolder.getMaxDayCategory("18");
-                    StatisticsCategory maxDayStatCat = new StatisticsCategory(maxDayCat.getTitle(), maxDayCat.getSum());
-
-                    StatisticsObject statsObj = new StatisticsObject(
-                            categoriesHolder.getCategories(),
-                            maxStatCat,
-                            maxYearStatCat,
-                            maxMonthStatCat,
-                            maxDayStatCat
-                    );
-                    stats.saveStats(statsFile, statsObj);
-
-                    //....Stats
-
-                    Category maxSumCategory = categoriesHolder.getMaxCategory();
-                    Response response = new Response(maxSumCategory.getTitle(), maxSumCategory.getSum());
+                    Response response = new Response(maxCat.getTitle(), maxCat.getSum());
                     out.println(Utils.mapper.writeValueAsString(response));
+
+                    // Stats
+                    try {
+
+                        StatisticsCategory maxStatCat = new StatisticsCategory(maxCat.getTitle(), maxCat.getSum());
+
+                        System.out.println("Enter year 'yyyy' to get year stats");
+                        String year = scanner.nextLine();
+                        Category maxYearCat = categoriesHolder.getMaxYearCategory(year);
+                        StatisticsCategory maxYearStatCat = new StatisticsCategory(maxYearCat.getTitle(), maxYearCat.getSum());
+
+                        System.out.println("Enter month 'mm' to get month stats");
+                        String month = scanner.nextLine();
+                        Category maxMonthCat = categoriesHolder.getMaxMonthCategory(month);
+                        StatisticsCategory maxMonthStatCat = new StatisticsCategory(maxMonthCat.getTitle(), maxMonthCat.getSum());
+
+                        System.out.println("Enter day 'dd' to get day stats");
+                        String day = scanner.nextLine();
+                        Category maxDayCat = categoriesHolder.getMaxDayCategory(day);
+                        StatisticsCategory maxDayStatCat = new StatisticsCategory(maxDayCat.getTitle(), maxDayCat.getSum());
+
+                        StatisticsObject statsObj = new StatisticsObject(
+                                categoriesHolder.getCategories(),
+                                maxStatCat,
+                                maxYearStatCat,
+                                maxMonthStatCat,
+                                maxDayStatCat
+                        );
+                        stats.saveStats(statsFile, statsObj);
+                        System.out.println("Stats adding succeeded");
+                    } catch (NullPointerException e) {
+                        e.printStackTrace();
+                        System.out.println("Stats adding failed");
+                    }
 
                 } catch (IOException e) {
                     e.printStackTrace();

@@ -33,63 +33,78 @@ public class CategoriesHandler {
         int maxYearSum = 0;
         int currYearPurchasesSum = 0;
         for (Category category : categories) {
-            
-            for (Purchase purchase : category.getPurchases()) {
-                if (!purchase.getDate().equals("")) {
-                    String currYear = purchase.getDate().substring(0, 4);
-                    if (currYear.equals(yyyy)) {
-                        currYearPurchasesSum += purchase.getPrice();
+
+            try {
+
+                for (Purchase purchase : category.getPurchases()) {
+                    if (!purchase.getDate().equals("")) {
+                        String currYear = purchase.getDate().substring(0, 4);
+                        if (currYear.equals(yyyy)) {
+                            currYearPurchasesSum += purchase.getPrice();
+                        }
                     }
                 }
-            }
-            
-            if (currYearPurchasesSum > maxYearSum) {
-                maxYearSum = currYearPurchasesSum;
-                result = category;
+
+                if (currYearPurchasesSum > maxYearSum) {
+                    maxYearSum = currYearPurchasesSum;
+                    result = category;
+                }
+            } catch (ArrayIndexOutOfBoundsException e) {
+                e.printStackTrace();
             }
         }
         return result;
     }
+
     public Category getMaxMonthCategory(String mm) {
         Category result = null;
         int maxMonthSum = 0;
         int currMonthPurchasesSum = 0;
         for (Category category : categories) {
 
-            for (Purchase purchase : category.getPurchases()) {
-                if (!purchase.getDate().equals("")) {
-                    String currYear = purchase.getDate().substring(5, 7);
-                    if (currYear.equals(mm)) {
-                        currMonthPurchasesSum += purchase.getPrice();
+            try {
+                for (Purchase purchase : category.getPurchases()) {
+                    if (!purchase.getDate().equals("")) {
+                        String currYear = purchase.getDate().substring(5, 7);
+                        if (currYear.equals(mm)) {
+                            currMonthPurchasesSum += purchase.getPrice();
+                        }
                     }
                 }
-            }
 
-            if (currMonthPurchasesSum > maxMonthSum) {
-                maxMonthSum = currMonthPurchasesSum;
-                result = category;
+                if (currMonthPurchasesSum > maxMonthSum) {
+                    maxMonthSum = currMonthPurchasesSum;
+                    result = category;
+                }
+            } catch (ArrayIndexOutOfBoundsException e) {
+                e.printStackTrace();
             }
         }
         return result;
     }
+
     public Category getMaxDayCategory(String dd) {
         Category result = null;
         int maxDaySum = 0;
         int currDayPurchasesSum = 0;
         for (Category category : categories) {
 
-            for (Purchase purchase : category.getPurchases()) {
-                if (!purchase.getDate().equals("")) {
-                    String currYear = purchase.getDate().substring(8);
-                    if (currYear.equals(dd)) {
-                        currDayPurchasesSum += purchase.getPrice();
+            try {
+                for (Purchase purchase : category.getPurchases()) {
+                    if (!purchase.getDate().equals("")) {
+                        String currYear = purchase.getDate().substring(8);
+                        if (currYear.equals(dd)) {
+                            currDayPurchasesSum += purchase.getPrice();
+                        }
                     }
                 }
-            }
 
-            if (currDayPurchasesSum > maxDaySum) {
-                maxDaySum = currDayPurchasesSum;
-                result = category;
+                if (currDayPurchasesSum > maxDaySum) {
+                    maxDaySum = currDayPurchasesSum;
+                    result = category;
+                }
+            } catch (ArrayIndexOutOfBoundsException e) {
+                e.printStackTrace();
             }
         }
         return result;
@@ -108,7 +123,7 @@ public class CategoriesHandler {
         return null;
     }
 
-    public List<Purchase> getAllPurchasesList(){
+    public List<Purchase> getAllPurchasesList() {
         List<Purchase> list = new ArrayList<>();
         for (Category category : getCategories()) {
             list.addAll(category.getPurchases());

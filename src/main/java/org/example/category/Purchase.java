@@ -1,5 +1,6 @@
 package org.example.category;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Objects;
 
 public class Purchase {
@@ -8,9 +9,9 @@ public class Purchase {
     private final int price;
 
     public Purchase(
-            String title,
-            String date,
-            int sum
+            @JsonProperty("title") String title,
+            @JsonProperty("date")String date,
+            @JsonProperty("sum")int sum
     ) {
         this.title = title;
         this.date = date;

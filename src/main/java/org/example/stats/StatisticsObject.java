@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonRootName;
 import org.example.category.Category;
 import java.util.HashSet;
+
 @JsonRootName("statistics")
 public class StatisticsObject {
 

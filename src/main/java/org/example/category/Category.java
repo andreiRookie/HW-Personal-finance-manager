@@ -1,9 +1,7 @@
 package org.example.category;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 
@@ -29,6 +27,11 @@ public class Category {
 
     public void addPurchase(Purchase purchase) {
         this.purchases.add(purchase);
+    }
+
+    public void addPurchaseAndSetCategorySum(Purchase purchase) {
+        addPurchase(purchase);
+        setSum(getSum() + purchase.getPrice());
     }
 
     @Override
