@@ -1,7 +1,6 @@
 package org.example;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import org.example.util.Utils;
 import org.example.net.Request;
 import org.example.net.Config;
@@ -21,10 +20,12 @@ public class Client {
 
         String input;
         String purchase;
+        String date;
         int sum;
 
         while (true) {
-            System.out.println("Enter 'purchaseTitle_sum' or 'end' to break");
+            System.out.println("Enter 'purchaseTitle', 'yyyy.mm.dd', 'sum' separated by a space"
+                    + " or 'end' to break");
 
             input = scanner.nextLine();
 
@@ -36,7 +37,8 @@ public class Client {
             try {
                 String[] parts = input.split(" ");
                 purchase = parts[0];
-                sum = Integer.parseInt(parts[1]);
+                date = parts[1];
+                sum = Integer.parseInt(parts[2]);
             }  catch (ArrayIndexOutOfBoundsException e) {
                 System.out.println("Invalid input, try again");
                 continue;
@@ -48,7 +50,7 @@ public class Client {
             ) {
 
 //                Request request = new Request("булка", Utils.TIME_FORMATTER.format(LocalDateTime.now()), 200);
-                Request request = new Request(purchase, "2022.02.08", sum);
+                Request request = new Request(purchase, date, sum);
                 out.println(Utils.mapper.writeValueAsString(request));
 
                 String responseAsString = in.readLine();
