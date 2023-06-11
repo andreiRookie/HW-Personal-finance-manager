@@ -61,21 +61,6 @@ class CategoriesHandlerTest {
     }
 
     @Test
-    void getAllPurchasesList_notEvergreen() {
-        List<Purchase> expected = new ArrayList<>(
-                Arrays.asList(new Purchase("shirt", "2023.02.28", 12),
-                        new Purchase("oil", "2020.09.29", 2000),
-                        new Purchase("bread", "2022.07.08", 200),
-                        new Purchase("butter", "2022.01.12", 300),
-                        new Purchase("soap", "", 400))
-        );
-
-        List<Purchase> actual = categoriesHandler.getAllPurchasesList();
-
-        Assertions.assertEquals(expected, actual);
-    }
-
-    @Test
     void getAllPurchasesTitleList() {
         List<String> expected = new ArrayList<>(
                 Arrays.asList("shirt",
@@ -99,31 +84,10 @@ class CategoriesHandlerTest {
         Assertions.assertEquals(expected, actual);
         Assertions.assertEquals(expected.getSum(), actual.getSum());
     }
-    @Test
-    void getMaxCategory_notEvergreen() {
-        Category expected = new Category(CAR);
-        expected.setSum(1000);
-
-        Category actual = categoriesHandler.getMaxCategory();
-
-        Assertions.assertEquals(expected, actual);
-        Assertions.assertEquals(expected.getSum(), actual.getSum());
-    }
 
     @Test
     void getMaxYearCategory() {
         Category expected = new Category(FOOD);
-        expected.setSum(MAX_YEAR_SUM);
-
-        Category actual = categoriesHandler.getMaxYearCategory(YEAR);
-
-        Assertions.assertEquals(expected, actual);
-        Assertions.assertEquals(expected.getSum(), actual.getSum());
-    }
-
-    @Test
-    void getMaxYearCategory_notEvergreen() {
-        Category expected = new Category(CLOTHES);
         expected.setSum(MAX_YEAR_SUM);
 
         Category actual = categoriesHandler.getMaxYearCategory(YEAR);
@@ -144,30 +108,8 @@ class CategoriesHandlerTest {
     }
 
     @Test
-    void getMaxMonthCategory_notEvergreen() {
-        Category expected = new Category(HOME);
-        expected.setSum(MAX_MONTH_SUM);
-
-        Category actual = categoriesHandler.getMaxMonthCategory(MONTH);
-
-        Assertions.assertEquals(expected, actual);
-        Assertions.assertEquals(expected.getSum(), actual.getSum());
-    }
-
-    @Test
     void getMaxDayCategory() {
         Category expected = new Category(HOME);
-        expected.setSum(MAX_DAY_SUM);
-
-        Category actual = categoriesHandler.getMaxDayCategory(DAY);
-
-        Assertions.assertEquals(expected, actual);
-        Assertions.assertEquals(expected.getSum(), actual.getSum());
-    }
-
-    @Test
-    void getMaxDayCategory_notEvergreen() {
-        Category expected = new Category(CLOTHES);
         expected.setSum(MAX_DAY_SUM);
 
         Category actual = categoriesHandler.getMaxDayCategory(DAY);
