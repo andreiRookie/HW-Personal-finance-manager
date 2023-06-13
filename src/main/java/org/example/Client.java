@@ -55,7 +55,7 @@ public class Client {
 
                 String responseAsString = in.readLine();
                 System.out.println("Response: " + responseAsString);
-                Response response = Utils.mapper.readValue(responseAsString, new TypeReference<Response>() {});
+                Response response = Utils.responseMapper.readValue(responseAsString, new TypeReference<Response>() {});
                 System.out.println(response);
 
             } catch (IOException e) {

@@ -123,7 +123,7 @@ public class Server {
                     // maxCategory server response
                     Category maxCat = categoriesHolder.getMaxCategory();
                     Response response = new Response(maxCat.getTitle(), maxCat.getSum());
-                    out.println(Utils.mapper.writeValueAsString(response));
+                    out.println(Utils.responseMapper.writeValueAsString(response));
 
                     // Stats
                     try {
