@@ -26,8 +26,6 @@ public class Server {
 
     public void start() throws IOException {
 
-        Scanner scanner = new Scanner(System.in);
-
         CategoriesHandler categoriesHolder = new CategoriesHandler(new HashSet<>());
         List<String> products = new ArrayList<>();
 
@@ -127,22 +125,18 @@ public class Server {
 
                     // Stats
                     try {
-
                         StatisticsCategory maxStatCat = new StatisticsCategory(maxCat.getTitle(), maxCat.getSum());
 
-                        System.out.println("Enter year 'yyyy' to get year stats");
-                        String year = scanner.nextLine();
-                        Category maxYearCat = categoriesHolder.getMaxYearCategory(year);
+                        String currYear = getYearFromRequestDate(request.getDate());
+                        Category maxYearCat = categoriesHolder.getMaxYearCategory(currYear);
                         StatisticsCategory maxYearStatCat = new StatisticsCategory(maxYearCat.getTitle(), maxYearCat.getSum());
 
-                        System.out.println("Enter month 'mm' to get month stats");
-                        String month = scanner.nextLine();
-                        Category maxMonthCat = categoriesHolder.getMaxMonthCategory(month);
+                        String currMonth = getMonthFromRequestDate(request.getDate());
+                        Category maxMonthCat = categoriesHolder.getMaxMonthCategory(currMonth);
                         StatisticsCategory maxMonthStatCat = new StatisticsCategory(maxMonthCat.getTitle(), maxMonthCat.getSum());
 
-                        System.out.println("Enter day 'dd' to get day stats");
-                        String day = scanner.nextLine();
-                        Category maxDayCat = categoriesHolder.getMaxDayCategory(day);
+                        String currDay = getDayFromRequestDate(request.getDate());
+                        Category maxDayCat = categoriesHolder.getMaxDayCategory(currDay);
                         StatisticsCategory maxDayStatCat = new StatisticsCategory(maxDayCat.getTitle(), maxDayCat.getSum());
 
                         StatisticsObject statsObj = new StatisticsObject(
@@ -168,5 +162,17 @@ public class Server {
             System.out.println("Cannot start server");
             e.printStackTrace();
         }
+    }
+
+    private String getYearFromRequestDate(String requestDate) {
+        return requestDate.substring(0, 4);
+    }
+
+    private String getMonthFromRequestDate(String requestDate) {
+        return requestDate.substring(5, 7);
+    }
+
+    private String getDayFromRequestDate(String requestDate) {
+        return requestDate.substring(8);
     }
 }

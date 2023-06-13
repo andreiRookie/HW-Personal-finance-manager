@@ -49,6 +49,7 @@ public class CategoriesHandler {
                     maxYearSum = currYearPurchasesSum;
                     result = category;
                 }
+                currYearPurchasesSum = 0;
             } catch (ArrayIndexOutOfBoundsException e) {
                 e.printStackTrace();
             }
@@ -65,8 +66,8 @@ public class CategoriesHandler {
             try {
                 for (Purchase purchase : category.getPurchases()) {
                     if (!purchase.getDate().equals("")) {
-                        String currYear = purchase.getDate().substring(5, 7);
-                        if (currYear.equals(mm)) {
+                        String currMonth = purchase.getDate().substring(5, 7);
+                        if (currMonth.equals(mm)) {
                             currMonthPurchasesSum += purchase.getPrice();
                         }
                     }
@@ -76,6 +77,7 @@ public class CategoriesHandler {
                     maxMonthSum = currMonthPurchasesSum;
                     result = category;
                 }
+                currMonthPurchasesSum = 0;
             } catch (ArrayIndexOutOfBoundsException e) {
                 e.printStackTrace();
             }
@@ -92,8 +94,8 @@ public class CategoriesHandler {
             try {
                 for (Purchase purchase : category.getPurchases()) {
                     if (!purchase.getDate().equals("")) {
-                        String currYear = purchase.getDate().substring(8);
-                        if (currYear.equals(dd)) {
+                        String currDay = purchase.getDate().substring(8);
+                        if (currDay.equals(dd)) {
                             currDayPurchasesSum += purchase.getPrice();
                         }
                     }
@@ -103,6 +105,7 @@ public class CategoriesHandler {
                     maxDaySum = currDayPurchasesSum;
                     result = category;
                 }
+                currDayPurchasesSum = 0;
             } catch (ArrayIndexOutOfBoundsException e) {
                 e.printStackTrace();
             }
