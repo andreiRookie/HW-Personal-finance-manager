@@ -24,7 +24,7 @@ public class Server {
     private static final int CATEGORY_INDEX = 1;
     private static final String CATEGORIES_FILE_PATH = "categories.tsv";
 
-    public static void main(String[] args) {
+    public void start() throws IOException {
 
         Scanner scanner = new Scanner(System.in);
 
